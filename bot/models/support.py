@@ -5,19 +5,15 @@ from models.start import bot
 from telebot import types
 
 
-def help_sup(message):
-    markup = types.InlineKeyboardMarkup()
-    markup.add(types.InlineKeyboardButton("Интересные факты", ))
-    markup.add(types.InlineKeyboardButton("Пароль"))
-    markup.add(types.InlineKeyboardButton("Купить сайт"))
-
-
 @bot.message_handler()
 class Vact:
     def __init__(self, message):
         self.message = message
 
-        if message.text == 'Интересные факты':
+        if message.text == '/start':
+            Vact.start_t(self, self.message)
+
+        elif message.text == 'Интересные факты':
             Vact.vact1(self, self.message)
 
         elif message.text == '/Назад':
@@ -147,3 +143,21 @@ class Vact:
                          'обущению на языке питон</a>\n'
                          'Закончил обущение в <a href="https://yandexlyceum.ru/">Яндекс лицее</a>',
                          parse_mode='html', reply_markup=markup)
+
+    def start_t(self, message):
+        sti = open('assets/hi.tgs', 'rb')
+        bot.send_sticker(message.chat.id, sti)
+
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item1 = types.KeyboardButton("Интересные факты")
+        item2 = types.KeyboardButton("Пароль")
+        item3 = types.KeyboardButton("Купить сайт")
+
+        markup.add(item1, item2, item3)
+
+        bot.send_message(message.chat.id,
+                         "Добро пожаловать, {0.first_name}!\nЯ - <b>{1.first_name}</b>, бот созданный для "
+                         "разных прикольных фишек и кнч для рекламы :D".format(
+                             message.from_user, bot.get_me()),
+                         parse_mode='html', reply_markup=markup)
+
